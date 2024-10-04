@@ -1,24 +1,17 @@
 name: CI/CD Pipeline
 on:
-  # Manually trigger workflow runs
   workflow_dispatch:
-  
-  # Trigger the workflow on push from the main branch
   push:
     branches:
       - master
 
 jobs:
-  # Test's job
   tests:
     name: Unit tests
-    
-    # Run on Ubuntu using the latest version
     runs-on: ubuntu-latest
-    
     services:
       postgres:
-        image: postgres:13  # Pulls the official PostgreSQL image
+        image: postgres:13
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -31,72 +24,63 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
-    # Job's steps
     steps:
-      # Check-out your repository under $GITHUB_WORKSPACE, so your workflow can access it
       - uses: actions/checkout@v1
 
-      # Set up JDK 17
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: '17'
 
-      # Set up Maven cache
       - name: Cache Maven packages
-        # This action allows caching dependencies and build outputs to improve workflow execution time.
         uses: actions/cache@v1
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      # Run Tests
+      # Wait for PostgreSQL to be ready
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL to be ready..."
+            sleep 5
+          done
+
       - name: Run Tests
         run: mvn -B test
         env:
           SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/test_db
           SPRING_DATASOURCE_USERNAME: postgres
           SPRING_DATASOURCE_PASSWORD: postgres
-  # Sonar's Job
+
   sonar:
-    # Depends on test's job
     needs: tests
     name: SonarCloud analysis
-
-    # Run on Ubuntu using the latest version
     runs-on: ubuntu-latest
 
-    # Job's steps
     steps:
-      # Check-out your repository under $GITHUB_WORKSPACE, so your workflow can access it
       - uses: actions/checkout@v1
 
-      # Set up JDK 17
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: '17'
 
-      # Set up SonarCloud cache
       - name: Cache SonarCloud packages
-        # This action allows caching dependencies and build outputs to improve workflow execution time.
         uses: actions/cache@v1
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      # Set up Maven cache
       - name: Cache Maven packages
-        # This action allows caching dependencies and build outputs to improve workflow execution time.
         uses: actions/cache@v1
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      # Analyze project with SonarCloud
       - name: Analyze with SonarCloud
         run: mvn -B verify sonar:sonar -Dsonar.projectKey=mono789_Sprint2-Aerolines -Dsonar.organization=mono789 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
         env:
