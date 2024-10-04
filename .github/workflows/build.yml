@@ -42,36 +42,15 @@ jobs:
       # Wait for PostgreSQL to be ready
       - name: Wait for PostgreSQL
         run: |
-          until pg_isready -h ${{ services.postgres.host }} -p 5432 -U postgres; do
+          until pg_isready -h postgres -p 5432 -U postgres; do
             echo "Waiting for PostgreSQL to be ready..."
-            sleep 30
+            sleep 5
           done
 
-      # Check PostgreSQL status
-      - name: Check PostgreSQL status
-        run: |
-          pg_isready -h ${{ services.postgres.host }} -p 5432 -U postgres
-          if [ $? -ne 0 ]; then
-            echo "PostgreSQL is not ready"
-            exit 1
-          fi
-
-      # Run Tests with retry mechanism
       - name: Run Tests
-        run: |
-          retry=0
-          max_retries=3
-          while [ $retry -lt $max_retries ]; do
-            mvn -B test
-            if [ $? -eq 0 ]; then
-              break
-            fi
-            retry=$((retry+1))
-            echo "Retry $retry: Connection to PostgreSQL failed. Waiting 10 seconds..."
-            sleep 10
-          done
+        run: mvn -B test
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://${{ services.postgres.host }}:5432/test_db
+          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/test_db
           SPRING_DATASOURCE_USERNAME: postgres
           SPRING_DATASOURCE_PASSWORD: postgres
 
