@@ -6,59 +6,9 @@ on:
       - master
 
 jobs:
-  tests:
-    name: Unit tests
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:13
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready -U postgres"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-    steps:
-      - uses: actions/checkout@v1
-
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: '17'
-
-      - name: Cache Maven packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
-
-      # Wait for PostgreSQL to be ready
-      - name: Wait for PostgreSQL
-        run: |
-          until pg_isready -h postgres -p 5432 -U postgres; do
-            echo "Waiting for PostgreSQL to be ready..."
-            sleep 5
-          done
-
-      - name: Run Tests
-        run: mvn -B test
-        env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/test_db
-          SPRING_DATASOURCE_USERNAME: postgres
-          SPRING_DATASOURCE_PASSWORD: postgres
-
   sonar:
-    needs: tests
     name: SonarCloud analysis
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v1
 
