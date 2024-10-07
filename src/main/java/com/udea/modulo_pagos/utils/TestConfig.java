@@ -13,14 +13,22 @@ public class TestConfig {
                 .withUsername("postgres")
                 .withPassword("postgres")
                 .withDatabaseName("postgres");
-        postgresContainer.start();
-        System.setProperty("POSTGRES_URL", postgresContainer.getJdbcUrl());
-        System.setProperty("POSTGRES_USER", postgresContainer.getUsername());
-        System.setProperty("POSTGRES_PASSWORD", postgresContainer.getPassword());
+
+        try {
+            postgresContainer.start();
+            System.setProperty("POSTGRES_URL", postgresContainer.getJdbcUrl());
+            System.setProperty("POSTGRES_USER", postgresContainer.getUsername());
+            System.setProperty("POSTGRES_PASSWORD", postgresContainer.getPassword());
+        } catch (Exception e) {
+            e.printStackTrace(); // Manejo de errores
+            tearDown(); // Asegurar que el contenedor se detenga en caso de error
+        }
     }
 
     @AfterAll
     public static void tearDown() {
-        postgresContainer.stop();
+        if (postgresContainer != null && postgresContainer.isRunning()) {
+            postgresContainer.stop();
+        }
     }
 }
