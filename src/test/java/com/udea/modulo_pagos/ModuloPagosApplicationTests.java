@@ -9,7 +9,15 @@ import com.udea.modulo_pagos.entities.Transaction;
 import com.udea.modulo_pagos.graphql.InputPayment;
 import com.udea.modulo_pagos.service.*;
 import com.udea.modulo_pagos.service.implementation.StripePaymentService;
+import com.udea.modulo_pagos.utils.TestConfig;
+import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import org.junit.jupiter.api.Test;
@@ -19,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +37,16 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class ModuloPagosApplicationTests {
+
+	@BeforeAll
+	public static void setup() {
+		TestConfig.setup();
+	}
+
+	@AfterAll
+	public static void tearDown() {
+		TestConfig.tearDown();
+	}
 
 	@Autowired
 	private GatewayPaymentController gatewayPaymentController;
@@ -146,11 +165,10 @@ class ModuloPagosApplicationTests {
 		when(paymentMethodXUserService.findAllByUserId(userId)).thenReturn(Collections.emptyList());
 
 		// Llamar al método del controlador
-		List<PaymentMethodXUser> result = paymentMethodXUserController.getPaymentMethodsByUserId(userId);
+		List<PaymentMethodXUser > result = paymentMethodXUserController.getPaymentMethodsByUserId(userId);
 
 		// Verificar el resultado
 		assertNotNull(result);
 		assertTrue(result.isEmpty());
 	}
-
 }

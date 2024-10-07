@@ -6,82 +6,74 @@ on:
       - master
 
 jobs:
+  # Test's job
   tests:
     name: Unit tests
+
+    # Run on Ubuntu using the latest version
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
+    # Job's steps
     steps:
+      # Check-out your repository under $GITHUB_WORKSPACE, so your workflow can access it
       - uses: actions/checkout@v1
 
+      # Set up JDK 11
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: '17'
 
+      # Set up Maven cache
       - name: Cache Maven packages
+        # This action allows caching dependencies and build outputs to improve workflow execution time.
         uses: actions/cache@v1
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
+      # Run Tests
       - name: Run Tests
         run: mvn -B test
-        env:
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: 5432
 
+  # Sonar's Job
   sonar:
-    name: SonarCloud analysis
+    # Depends on test's job
     needs: tests
+    name: SonarCloud analysis
+
+    # Run on Ubuntu using the latest version
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
+    # Job's steps
     steps:
+      # Check-out your repository under $GITHUB_WORKSPACE, so your workflow can access it
       - uses: actions/checkout@v1
 
+      # Set up JDK 17
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: '17'
 
+      # Set up SonarCloud cache
       - name: Cache SonarCloud packages
+        # This action allows caching dependencies and build outputs to improve workflow execution time.
         uses: actions/cache@v1
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
+      # Set up Maven cache
       - name: Cache Maven packages
+        # This action allows caching dependencies and build outputs to improve workflow execution time.
         uses: actions/cache@v1
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-
       - name: Analyze with SonarCloud
         run: mvn -B verify sonar:sonar -Dsonar.projectKey=mono789_Sprint2-Aerolines -Dsonar.organization=mono789 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN
         env:
