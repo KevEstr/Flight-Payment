@@ -1,12 +1,11 @@
 package com.udea.modulo_pagos.service.implementation;
 
-import com.udea.modulo_pagos.entities.Booking;
-import com.udea.modulo_pagos.entities.Payment;
-import com.udea.modulo_pagos.entities.PaymentMethod;
-import com.udea.modulo_pagos.entities.Transaction;
+import com.stripe.exception.StripeException;
+import com.udea.modulo_pagos.entities.*;
 import com.udea.modulo_pagos.graphql.InputTransaction;
 import com.udea.modulo_pagos.repositories.ITransactionRepository;
 import com.udea.modulo_pagos.service.IBookingService;
+import com.udea.modulo_pagos.service.IGatewayPaymentService;
 import com.udea.modulo_pagos.service.IPaymentMethodService;
 import com.udea.modulo_pagos.service.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import java.time.LocalDate;
 @Service
 public class TransactionServiceImpl implements ITransactionService {
 
-    private static final float TAXES = 0.19f;
+    private static final Float TAXES = 0.19f;
 
     @Autowired
     private ITransactionRepository transactionRepository;
@@ -28,25 +27,48 @@ public class TransactionServiceImpl implements ITransactionService {
     @Autowired
     private IPaymentMethodService paymentMethodService;
 
-    public Transaction createTransaction(InputTransaction inputTransaction){
+    @Autowired
+    private IGatewayPaymentService gatewayPaymentService;
+
+    @Autowired
+    private StripePaymentService stripePaymentService;
+
+    @Autowired
+    private MercadoPagoService mercadoPagoService;
+
+    public String payTransaction(InputTransaction inputTransaction) throws StripeException {
+
         Transaction transaction = new Transaction();
+        PaymentMethod paymentMethod = new PaymentMethod();
         transaction.setStatus((byte) 0);
         transaction.setDate(LocalDate.now());
-        transaction.setAdditional_charge(inputTransaction.getAdditional_charge());
 
-        Booking booking = bookingService.getBookingById(inputTransaction.getBooking());
+        Booking booking = bookingService.getBookingById(inputTransaction.getBooking_id());
         transaction.setBooking(booking);
 
-        PaymentMethod paymentMethod = paymentMethodService.getPaymentMethodById(inputTransaction.getPayment_method());
+        GatewayPayment gatewayPayment = gatewayPaymentService.findGatewayPaymentById(inputTransaction.getGateway_payment_id());
+        transaction.setGateway_payment(gatewayPayment);
+
+        Long subtotal = booking.getPrice().longValue() + booking.getAdditional_charge().longValue(); // Asegúrate de que ambos valores son Long
+        Long totalPrice = subtotal + (subtotal * TAXES.longValue());
+        transaction.setTotal_price(totalPrice);
+
+        //dejaré lo de payment method de forma predeterminada por si las moscas
+        paymentMethod = paymentMethodService.getPaymentMethodById(1L);
         transaction.setPayment_method(paymentMethod);
 
-        float subtotal = booking.getPrice() + inputTransaction.getAdditional_charge();
-        float totalPrice = subtotal + (subtotal * TAXES);
-        transaction.setTotal_price(totalPrice);
 
         transactionRepository.save(transaction);
 
-        return transaction;
+        if(inputTransaction.getGateway_payment_id()==1){
+            return stripePaymentService.createCheckoutSession(transaction.getId(), transaction.getTotal_price(), inputTransaction.getBooking_id());
+        }
+        else if(inputTransaction.getGateway_payment_id()==2){
+            return mercadoPagoService.createPaymentPreference(transaction.getId(), transaction.getTotal_price());
+        }
+
+        return "Gateway payment provided does not exist";
+
     }
 
     public Transaction updateTransactionStatus(Long transactionId, byte newStatus){

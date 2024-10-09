@@ -3,7 +3,9 @@ package com.udea.modulo_pagos.controller;
         import com.stripe.model.Event;
         import com.stripe.model.checkout.Session; // Importa la clase correcta
         import com.stripe.net.Webhook;
+        import com.udea.modulo_pagos.entities.Booking;
         import com.udea.modulo_pagos.graphql.InputPayment;
+        import com.udea.modulo_pagos.service.IBookingService;
         import com.udea.modulo_pagos.service.IPaymentService;
         import com.udea.modulo_pagos.service.ITransactionService;
         import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class StripeWebhookController {
 
     @Autowired
     private IPaymentService paymentService;
+
+    @Autowired
+    private IBookingService bookingService;
 
     private static final String endpointSecret = "whsec_b9c8b45f403fd69567d2553364f032accc5d81525c9887cbec6ed8d7d059a9ae";
 
@@ -62,8 +67,8 @@ public class StripeWebhookController {
     }
 
     @GetMapping("/success")
-    public ResponseEntity<String> paymentSuccess() {
-        return ResponseEntity.ok("Payment successful!");
+    public Booking paymentSuccess(@RequestParam Long booking_id) {
+        return bookingService.getBookingById(booking_id);
     }
 
 }

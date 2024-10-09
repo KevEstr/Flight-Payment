@@ -45,8 +45,8 @@ public class TransactionController {
     }
 
     @MutationMapping
-    public Transaction createTransaction(@Argument InputTransaction inputTransaction) {
-        return transactionService.createTransaction(inputTransaction);
+    public String payTransaction(@Argument InputTransaction inputTransaction) throws StripeException {
+        return transactionService.payTransaction(inputTransaction);
     }
 
     @MutationMapping
@@ -57,12 +57,12 @@ public class TransactionController {
     private static final float CONVERSION_RATE = 4000.0f; // 1 USD = 4000 COP
 
     @MutationMapping
-    public String createStripePaymentSession(@Argument Long transactionId) {
+    public String createStripePaymentSession(@Argument Long transactionId, @Argument Long bookingId) {
         try {
             Transaction transaction = transactionService.findTransactionById(transactionId);
             float totalPriceInDollars = transaction.getTotal_price() / CONVERSION_RATE;
             long amountInCents = (long) (totalPriceInDollars * 100);
-            return stripePaymentService.createCheckoutSession(transactionId, amountInCents);
+            return stripePaymentService.createCheckoutSession(transactionId, amountInCents, bookingId);
         } catch (StripeException e) {
             throw new RuntimeException("Failed to create Stripe session", e);
         }

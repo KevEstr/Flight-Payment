@@ -4,6 +4,8 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.udea.modulo_pagos.entities.Transaction;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,7 @@ public class StripePaymentService {
     @Value("${STRIPE_SECRET_KEY}")
     private String stripeSecretKey;
 
-    public String createCheckoutSession(Long transactionId, Long amount) throws StripeException {
+    public String createCheckoutSession(Long transactionId, Long amount, Long bookingId) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
 
         // Configurar los parámetros de la sesión
@@ -21,7 +23,7 @@ public class StripePaymentService {
                 SessionCreateParams.builder()
                         .setMode(SessionCreateParams.Mode.PAYMENT)
                         .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                        .setSuccessUrl("http://localhost:8081/success?session_id={CHECKOUT_SESSION_ID}")
+                        .setSuccessUrl("http://localhost:8081/success?booking_id="+bookingId)
                         .setCancelUrl("http://localhost:8081/cancel")
                         .addLineItem(
                                 SessionCreateParams.LineItem.builder()

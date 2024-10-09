@@ -1,15 +1,17 @@
+
 type Query {
     findPaymentById(payment_id: ID!) : Payment
     allPaymentMethods : [PaymentMethod!]!
     allGatewayPayment: [GatewayPayment!]!
     findTransactionById( id: ID!) : Transaction
     getPaymentMethodsByUserId( userId: ID!) : [PaymentMethodXUser!]!
-
+    getAllUserBookings(user_id: ID!) : [Booking!]!
+    getBookingById(booking_id: ID!) : Booking
 }
 
 type Mutation {
     createPayment(inputPayment : InputPayment!) : Payment
-    createTransaction(inputTransaction : InputTransaction! ): Transaction
+    payTransaction(inputTransaction : InputTransaction! ): String
     updateTransactionStatus( transactionId : ID!, newStatus: Int!): Transaction
     createPaymentMethodXUser( inputPaymentMethodXUser: InputPaymentMethodXUser): PaymentMethodXUser
 
@@ -52,18 +54,36 @@ type Transaction{
     status: Int,
     date: String,
     total_price: Float,
-    additional_charge: Float,
     paymentMethod : PaymentMethod,
     booking: Booking
 }
 
-type Flight{
-    id: ID
+type FlightInfo {
+    departureFlight: Flight!
+    returnFlight: Flight!
+}
+
+type Flight {
+    id: ID!
+    departure_date: String!
+    departure_time: String!
+    arrival_time: String!
+    departure_airport: String!
+    arrival_airport: String!
+    duration: String!
+    flight_number: String!
+    flight_class: String!
+    stops: String!
+
 }
 
 type Booking{
     id: ID
     is_paid: Boolean
+    status: Int
+    price: Float
+    additional_charge: Float
+    flightInfo: FlightInfo
 }
 
 type User{
@@ -85,7 +105,6 @@ input InputPayment {
 }
 
 input InputTransaction{
-    additional_charge: Float
     booking_id: ID!,
-    payment_method_id: ID!
+    gateway_payment_id: ID!
 }
