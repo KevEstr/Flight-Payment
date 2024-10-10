@@ -15,7 +15,6 @@ public class Booking {
     private Long id;
     private boolean is_paid;
     private Double additional_charge;
-    private byte status;
     @Column
     private Float price;
 

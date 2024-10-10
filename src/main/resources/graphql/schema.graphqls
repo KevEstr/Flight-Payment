@@ -80,7 +80,6 @@ type Flight {
 type Booking{
     id: ID
     is_paid: Boolean
-    status: Int
     price: Float
     additional_charge: Float
     flightInfo: FlightInfo
