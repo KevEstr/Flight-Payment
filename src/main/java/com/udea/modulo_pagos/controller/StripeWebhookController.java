@@ -27,7 +27,7 @@ public class StripeWebhookController {
     @Autowired
     private IBookingService bookingService;
 
-    private static final String endpointSecret = "whsec_b9c8b45f403fd69567d2553364f032accc5d81525c9887cbec6ed8d7d059a9ae";
+    private static final String endpointSecret = "whsec_59j59q6p2sjaUAKVRwI77xH8e5bn5VHm";
 
     @PostMapping("/stripe-webhook")
     public Map<String, String> handleStripeWebhook(
