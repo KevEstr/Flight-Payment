@@ -6,7 +6,7 @@ import com.udea.modulo_pagos.graphql.InputTransaction;
 
 public interface ITransactionService {
 
-    String payTransaction(InputTransaction inputTransaction) throws StripeException;
+    String createTransaction(InputTransaction inputTransaction) throws StripeException;
 
     Transaction updateTransactionStatus(Long id, byte status);
 

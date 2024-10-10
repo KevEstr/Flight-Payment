@@ -10,15 +10,12 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     public User(Long id) {
         this.id = id;
     }
-
     public User(){
 
     }
-
     public void setId(Long id) {
         this.id = id;
     }

@@ -45,8 +45,8 @@ public class TransactionController {
     }
 
     @MutationMapping
-    public String payTransaction(@Argument InputTransaction inputTransaction) throws StripeException {
-        return transactionService.payTransaction(inputTransaction);
+    public String createTransaction(@Argument InputTransaction inputTransaction) throws StripeException {
+        return transactionService.createTransaction(inputTransaction);
     }
 
     @MutationMapping

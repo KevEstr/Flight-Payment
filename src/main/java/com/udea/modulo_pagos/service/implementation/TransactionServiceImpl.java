@@ -36,7 +36,7 @@ public class TransactionServiceImpl implements ITransactionService {
     @Autowired
     private MercadoPagoService mercadoPagoService;
 
-    public String payTransaction(InputTransaction inputTransaction) throws StripeException {
+    public String createTransaction(InputTransaction inputTransaction) throws StripeException {
 
         Transaction transaction = new Transaction();
         PaymentMethod paymentMethod = new PaymentMethod();

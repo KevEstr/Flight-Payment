@@ -11,7 +11,7 @@ type Query {
 
 type Mutation {
     createPayment(inputPayment : InputPayment!) : Payment
-    payTransaction(inputTransaction : InputTransaction! ): String
+    createTransaction(inputTransaction : InputTransaction! ): String
     updateTransactionStatus( transactionId : ID!, newStatus: Int!): Transaction
     createPaymentMethodXUser( inputPaymentMethodXUser: InputPaymentMethodXUser): PaymentMethodXUser
 
