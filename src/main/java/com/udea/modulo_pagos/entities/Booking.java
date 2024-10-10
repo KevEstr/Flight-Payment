@@ -1,8 +1,11 @@
 package com.udea.modulo_pagos.entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,24 +33,16 @@ public class Booking {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "departure_flight_id")
-    private Flight departureFlight;
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<FlightInfo> flight_infos;
 
-    @ManyToOne
-    @JoinColumn(name = "return_flight_id")
-    private Flight returnFlight;
+
 
     public Booking(){
 
     }
 
-    public FlightInfo getFlightInfo() {
-        FlightInfo flightInfo = new FlightInfo();
-        flightInfo.setDepartureFlight(this.departureFlight);
-        flightInfo.setReturnFlight(this.returnFlight);
-        return flightInfo;
-    }
 }
 
 

@@ -59,8 +59,8 @@ type Transaction{
 }
 
 type FlightInfo {
-    departureFlight: Flight!
-    returnFlight: Flight!
+    id: ID!
+    flight: Flight
 }
 
 type Flight {
@@ -82,7 +82,7 @@ type Booking{
     is_paid: Boolean
     price: Float
     additional_charge: Float
-    flightInfo: FlightInfo
+    flight_infos: [FlightInfo!]!
 }
 
 type User{

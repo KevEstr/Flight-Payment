@@ -18,6 +18,11 @@ CREATE TABLE IF NOT EXISTS gateway_payment (
     name VARCHAR(50) NOT NULL
 );
 
+-- Crear tabla gateway_payment
+CREATE TABLE IF NOT EXISTS "user" (
+    id SERIAL PRIMARY KEY
+);
+
 -- Crear tabla booking
 CREATE TABLE IF NOT EXISTS booking (
     id SERIAL PRIMARY KEY,
@@ -29,10 +34,7 @@ CREATE TABLE IF NOT EXISTS booking (
     flight_id INT,
     departure_flight_id INT,
     return_flight_id INT,
-    FOREIGN KEY (user_id) REFERENCES "user"(id),    -- Referencia a "user"
-    FOREIGN KEY (flight_id) REFERENCES flight(id),
-    FOREIGN KEY (departure_flight_id) REFERENCES flight(id),
-    FOREIGN KEY (return_flight_id) REFERENCES flight(id)
+    FOREIGN KEY (user_id) REFERENCES "user"(id)    -- Referencia a "user"
 );
 
 -- Crear tabla payment
@@ -40,16 +42,28 @@ CREATE TABLE IF NOT EXISTS payment (
     id SERIAL PRIMARY KEY,
     date DATE NOT NULL,
     gateway_payment_id INT,
-    transaction_id INT,
+    transaction_id INT
+);
+
+
+-- Crear tabla flight_info
+CREATE TABLE IF NOT EXISTS flight_info (
+    id SERIAL PRIMARY KEY,
+    flight_id INT,
+    booking_id INT,
+    FOREIGN KEY (flight_id) REFERENCES flight(id),
+    FOREIGN KEY (booking_id) REFERENCES booking(id)
 );
 
 -- ==================== INSERTAR DATOS =============================
 
 -- Insertar datos en "user"
-INSERT INTO "user" DEFAULT VALUES;
-INSERT INTO "user" DEFAULT VALUES;
-INSERT INTO "user" DEFAULT VALUES;
-INSERT INTO "user" DEFAULT VALUES;
+-- Insertar registros en la tabla "user"
+INSERT INTO "user" (id)
+VALUES
+    (1),
+    (2),
+    (3);
 
 INSERT INTO public.payment_method (name)
 VALUES
@@ -70,7 +84,17 @@ INSERT INTO gateway_payment (name) VALUES
 ('Mercadopago');
 
 -- Insertar datos en booking
-INSERT INTO booking (user_id, price, is_paid, additional_charge, status, flight_id, departure_flight_id, return_flight_id)
+INSERT INTO booking (user_id, price, is_paid, additional_charge)
 VALUES
-(1, 34000, false, 2100, -1, 1, 1, 2),
-(2, 66000, false, 4900, 0, 2, 1, 2);
+(1, 34000, false, 2100),
+(2, 66000, false, 4900),
+(3, 98000, false, 3500);
+
+INSERT INTO flight_info (flight_id, booking_id)
+VALUES
+(1,1),
+(2,1),
+(1,2),
+(2,2),
+(1,3),
+(2,3);

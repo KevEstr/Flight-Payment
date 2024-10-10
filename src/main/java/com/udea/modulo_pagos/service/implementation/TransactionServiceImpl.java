@@ -38,12 +38,18 @@ public class TransactionServiceImpl implements ITransactionService {
 
     public String createTransaction(InputTransaction inputTransaction) throws StripeException {
 
+
         Transaction transaction = new Transaction();
         PaymentMethod paymentMethod = new PaymentMethod();
         transaction.setStatus((byte) 0);
         transaction.setDate(LocalDate.now());
 
         Booking booking = bookingService.getBookingById(inputTransaction.getBooking_id());
+
+        if (booking.is_paid()) {
+            throw new IllegalStateException("La reserva no se puede volver a pagar: Su estado es PAGADA.");
+        }
+
         transaction.setBooking(booking);
 
         GatewayPayment gatewayPayment = gatewayPaymentService.findGatewayPaymentById(inputTransaction.getGateway_payment_id());
