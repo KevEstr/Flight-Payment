@@ -10,7 +10,6 @@ type Query {
 }
 
 type Mutation {
-    createPayment(inputPayment : InputPayment!) : Payment
     createTransaction(inputTransaction : InputTransaction! ): String
     updateTransactionStatus( transactionId : ID!, newStatus: Int!): Transaction
     createPaymentMethodXUser( inputPaymentMethodXUser: InputPaymentMethodXUser): PaymentMethodXUser
@@ -96,11 +95,6 @@ input InputPaymentMethodXUser{
     ccv: String
     user_id: ID!,
     payment_method_id: ID!
-}
-
-input InputPayment {
-    gateway_payment_id: ID
-    transaction_id: ID!
 }
 
 input InputTransaction{
