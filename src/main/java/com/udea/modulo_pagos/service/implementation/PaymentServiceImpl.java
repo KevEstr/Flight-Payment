@@ -31,7 +31,11 @@ public class PaymentServiceImpl implements IPaymentService {
         GatewayPayment gatewayPayment = gatewayPaymentService.findGatewayPaymentById(inputPayment.getGateway_payment_id());
         Transaction transaction = transactionService.findTransactionById(inputPayment.getTransaction_id());
 
-        // Solo permitir crear el pago si la transacción es "PENDING" (o algún otro estado válido)
+        // Validar si el booking ya está pagado
+        if (transaction.getBooking().is_paid()) {
+            throw new IllegalStateException("No se puede realizar el pago, la reserva ya está pagada.");
+        }
+
         if (transaction.getStatus() == 1) {
             throw new IllegalStateException("No se puede realizar el pago nuevamente, el estado de la transacción es SUCCESS.");
         }
