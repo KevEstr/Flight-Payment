@@ -10,7 +10,6 @@ type Query {
 }
 
 type Mutation {
-    createPayment(inputPayment : InputPayment!) : Payment
     createTransaction(inputTransaction : InputTransaction! ): String
     updateTransactionStatus( transactionId : ID!, newStatus: Int!): Transaction
     createPaymentMethodXUser( inputPaymentMethodXUser: InputPaymentMethodXUser): PaymentMethodXUser

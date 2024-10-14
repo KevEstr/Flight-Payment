@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.sql.DataSource;
 import java.util.Collections;
@@ -35,6 +36,11 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+@TestPropertySource(properties = {
+		"spring.datasource.url=jdbc:postgresql://localhost:5432/juan_payment",
+		"spring.datasource.username=postgres",
+		"spring.datasource.password=123"
+})
 @SpringBootTest
 class ModuloPagosApplicationTests {
 
