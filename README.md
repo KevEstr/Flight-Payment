@@ -1,3 +1,16 @@
+[![CI/CD Pipeline](https://github.com/mono789/Flight-Payment/actions/workflows/build.yml/badge.svg)](https://github.com/mono789/Flight-Payment/actions/workflows/build.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=bugs)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=coverage)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=mono789_Flight-Payment&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=mono789_Flight-Payment)
+
 # Sprint 2 - Módulo de Pagos A
 
 Este repositorio contiene el código del **backend** del módulo de pagos A, desarrollado con **Spring Boot** y **GraphQL**, dockerizado para facilitar su despliegue y ejecución.
