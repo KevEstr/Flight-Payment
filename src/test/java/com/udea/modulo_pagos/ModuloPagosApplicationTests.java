@@ -9,6 +9,7 @@ import com.udea.modulo_pagos.entities.Transaction;
 import com.udea.modulo_pagos.graphql.InputPayment;
 import com.udea.modulo_pagos.service.*;
 import com.udea.modulo_pagos.service.implementation.StripePaymentService;
+import com.udea.modulo_pagos.utils.TestConfig;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,8 +36,23 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+@TestPropertySource(properties = {
+		"spring.datasource.url=jdbc:postgresql://localhost:5432/juan_payment",
+		"spring.datasource.username=postgres",
+		"spring.datasource.password=123"
+})
 @SpringBootTest
 class ModuloPagosApplicationTests {
+
+	@BeforeAll
+	public static void setup() {
+		TestConfig.setup();
+	}
+
+	@AfterAll
+	public static void tearDown() {
+		TestConfig.tearDown();
+	}
 
 	@Autowired
 	private GatewayPaymentController gatewayPaymentController;
