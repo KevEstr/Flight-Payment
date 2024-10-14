@@ -97,11 +97,6 @@ input InputPaymentMethodXUser{
     payment_method_id: ID!
 }
 
-input InputPayment {
-    gateway_payment_id: ID
-    transaction_id: ID!
-}
-
 input InputTransaction{
     booking_id: ID!,
     gateway_payment_id: ID!
