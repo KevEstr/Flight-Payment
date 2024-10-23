@@ -33,5 +33,8 @@ public class BookingServiceImpl implements IBookingService {
         return bookingRepository.findByUserId(user_id);
     }
 
+    public List<Booking> getAllBookings(){
+        return (List<Booking>) bookingRepository.findAll();
+    }
 
 }

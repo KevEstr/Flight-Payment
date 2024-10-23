@@ -12,4 +12,6 @@ public interface IBookingService {
     Booking updateBookingStatus(Long bookingId, boolean isPaid);
 
     List<Booking>  getAllUserBookings(Long user_id);
+
+    List<Booking> getAllBookings();
 }
