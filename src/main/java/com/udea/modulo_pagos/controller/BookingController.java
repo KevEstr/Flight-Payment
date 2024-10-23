@@ -29,4 +29,9 @@ public class BookingController {
     public Booking getBookingById(@Argument Long booking_id) {
         return bookingService.getBookingById(booking_id);
     }
+
+    @QueryMapping
+    public List<Booking> getAllBookings() {
+        return bookingService.getAllBookings();
+    }
 }
