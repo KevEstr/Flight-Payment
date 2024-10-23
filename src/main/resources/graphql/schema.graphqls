@@ -83,10 +83,11 @@ type Booking{
     price: Float
     additional_charge: Float
     flight_infos: [FlightInfo!]!
+    user_id: ID
 }
 
 type User{
-    id: ID
+    id: ID!
 }
 
 input InputPaymentMethodXUser{
