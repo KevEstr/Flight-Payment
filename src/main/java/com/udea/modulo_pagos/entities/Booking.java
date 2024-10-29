@@ -21,15 +21,16 @@ public class Booking {
     @Column
     private Float price;
 
-
-    public Booking(Long id, boolean is_paid, float price) {
+    public Booking(Long id, Double additional_charge, boolean is_paid, Float price, User user, List<FlightInfo> flight_infos) {
         this.id = id;
+        this.additional_charge = additional_charge;
         this.is_paid = is_paid;
         this.price = price;
-        this.additional_charge= price*0.1;
+        this.user = user;
+        this.flight_infos = flight_infos;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id", nullable = false)
     @JsonManagedReference
     private User user;
@@ -38,7 +39,9 @@ public class Booking {
     @JsonManagedReference
     private List<FlightInfo> flight_infos;
 
-
+    public User getUser() {
+        return user;
+    }
 
     public Booking(){
 

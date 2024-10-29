@@ -1,11 +1,16 @@
 package com.udea.modulo_pagos.controller;
 
+import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.resources.payment.Payment;
+import com.udea.modulo_pagos.entities.PreferencePayment;
 import com.udea.modulo_pagos.graphql.InputPayment;
+import com.udea.modulo_pagos.repositories.IPreferencePaymentRepository;
 import com.udea.modulo_pagos.service.IPaymentService;
 import com.udea.modulo_pagos.service.ITransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -15,66 +20,55 @@ import java.util.Map;
 public class MercadoPagoWebhookController {
 
     @Autowired
+    private IPreferencePaymentRepository preferenceRepository;
+
+    @Autowired
     private ITransactionService transactionService;
 
     @Autowired
     private IPaymentService paymentService;
 
-    @PostMapping("/mercado-pago-webhook")
-    public Map<String, String> handleMercadoPagoWebhook(@RequestBody Map<String, Object> payload) {
-        String responseMessage = "";
+    @Value("${MERCADO_PAGO_ACCESS_TOKEN}")
+    private String accessToken;
+
+    @PostMapping("/mercadopago-webhook")
+    public ResponseEntity<?> handleMercadoPagoWebhook(@RequestBody Map<String, Object> payload) {
         try {
-            System.out.println("Payload recibido: " + payload);
+            Map<String, Object> data = (Map<String, Object>) payload.get("data");
+            String paymentId = data.get("id").toString();
 
-            if (payload.containsKey("data") && payload.containsKey("type")) {
-                Map<String, Object> data = (Map<String, Object>) payload.get("data");
-                String eventType = (String) payload.get("type");
+            // Obtener el payment de MercadoPago
+            MercadoPagoConfig.setAccessToken(accessToken);
+            PaymentClient paymentClient = new PaymentClient();
+            Payment payment = paymentClient.get(Long.valueOf(paymentId));
 
-                if (data.containsKey("id")) {
-                    Long mercadoPagoPaymentId = Long.valueOf(data.get("id").toString());
+            // Obtener el transactionId del external_reference
+            String externalReference = payment.getExternalReference();
+            Long transactionId = Long.parseLong(externalReference);
 
-                    // Utilizar PaymentClient en lugar de PreferenceClient
-                    PaymentClient paymentClient = new PaymentClient();
-                    Payment payment = paymentClient.get(mercadoPagoPaymentId);
+            // Buscar la preferencia por transactionId
+            PreferencePayment preference = preferenceRepository.findByTransactionId(transactionId)
+                    .orElseThrow(() -> new RuntimeException("Preference not found"));
 
-                    // Recuperar el transactionId desde los metadatos
-                    Map<String, Object> metadata = payment.getMetadata();
-                    String transactionIdString = (String) metadata.get("transactionId");
+            // Actualizar el paymentId
+            preference.setPaymentId(paymentId);
+            preference.setStatus("COMPLETED");
+            preferenceRepository.save(preference);
 
-                    if (transactionIdString != null) {
-                        Long transactionId = Long.valueOf(transactionIdString);
-                        System.out.println("Transacción ID: " + transactionId);
+            // Crear el pago en la base de datos
+            InputPayment inputPayment = new InputPayment();
+            inputPayment.setTransaction_id(transactionId);
+            inputPayment.setGateway_payment_id(2L);
 
-                        switch (eventType) {
-                            case "payment":
-                                InputPayment inputPayment = new InputPayment();
-                                inputPayment.setTransaction_id(transactionId);
-                                inputPayment.setGateway_payment_id(2L);  // ID de MercadoPago como gateway
-                                paymentService.createPayment(inputPayment);
+            paymentService.createPayment(inputPayment);
 
-                                transactionService.updateTransactionStatus(transactionId, (byte) 1);
-                                responseMessage = "Pago completado y guardado exitosamente.";
-                                break;
+            // Actualizar el estado de la transacción
+            transactionService.updateTransactionStatus(transactionId, (byte) 1);
 
-                            default:
-                                responseMessage = "Evento no manejado: " + eventType;
-                        }
-                    } else {
-                        responseMessage = "TransactionId no encontrado en los metadatos.";
-                    }
-                } else {
-                    responseMessage = "ID de pago no encontrado en el payload.";
-                }
-            } else {
-                responseMessage = "Payload no contiene los campos requeridos.";
-            }
+            return ResponseEntity.ok("Webhook procesado correctamente");
         } catch (Exception e) {
-            responseMessage = "Error procesando el webhook de Mercado Pago: " + e.getMessage();
+            return ResponseEntity.status(500).body("Error procesando webhook: " + e.getMessage());
         }
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", responseMessage);
-        return response;
     }
-
 }
+

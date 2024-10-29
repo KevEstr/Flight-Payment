@@ -8,13 +8,14 @@ import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.preference.Preference;
+import com.udea.modulo_pagos.entities.PreferencePayment;
+import com.udea.modulo_pagos.repositories.IPreferencePaymentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MercadoPagoService {
@@ -22,55 +23,47 @@ public class MercadoPagoService {
     @Value("${MERCADO_PAGO_ACCESS_TOKEN}")
     private String accessToken;
 
+    @Autowired
+    private IPreferencePaymentRepository preferenceRepository;
+
     public String createPaymentPreference(Long transactionId, Long amount) {
         try {
-            // Configurar el token de acceso para Mercado Pago
             MercadoPagoConfig.setAccessToken(accessToken);
-
-            // Crear un cliente de preferencias
             PreferenceClient client = new PreferenceClient();
 
-            // Crear el ítem de la preferencia
+            // Crear ítem y URLs de retorno
             PreferenceItemRequest item = PreferenceItemRequest.builder()
                     .title("Transaction ID: " + transactionId)
                     .quantity(1)
-                    .unitPrice(BigDecimal.valueOf(amount.floatValue())) // Precio del ítem
+                    .unitPrice(BigDecimal.valueOf(amount.floatValue()))
                     .build();
 
-            // Crear las URLs de retorno
+            // Agregar external_reference con el transactionId
             PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
                     .success("http://localhost:8081/success")
                     .failure("http://localhost:8081/failure")
                     .pending("http://localhost:8081/pending")
                     .build();
 
-            // GUARDAR EN DB
-            // Agregar los metadatos (incluyendo el transactionId)
-            Map<String, Object> metadata = new HashMap<>();
-            metadata.put("transactionId", transactionId.toString());
-            System.out.println("Metadatos agregados a la preferencia: " + metadata);
-
-            // Crear la solicitud de preferencia con los metadatos
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(List.of(item))
                     .backUrls(backUrls)
-                    .metadata(metadata)  // Incluye los metadatos aquí
+                    .externalReference(transactionId.toString()) // Agregamos el external_reference
                     .build();
 
-            // Crear la preferencia usando el cliente
             Preference preference = client.create(preferenceRequest);
 
-            System.out.println("Preferencia creada: " + preference.getId());
-            // GUARDAR PREFERENCE ID EN LA DB CON EL ID TRANSACTION
+            // Guardar en la base de datos
+            PreferencePayment newPreference = new PreferencePayment();
+            newPreference.setTransactionId(transactionId);
+            newPreference.setPreferenceId(preference.getId());
+            newPreference.setStatus("PENDING");
+            preferenceRepository.save(newPreference);
 
-            // Retornar el link de inicio de pago
             return preference.getInitPoint();
 
-        } catch (MPException e) {
+        } catch (MPException | MPApiException e) {
             throw new RuntimeException("Error al crear la preferencia de Mercado Pago", e);
-        } catch (MPApiException e) {
-            throw new RuntimeException(e);
         }
     }
-
 }
