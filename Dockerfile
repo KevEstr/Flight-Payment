@@ -13,6 +13,7 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 # Copiar el archivo JAR desde la etapa de construcción
 COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/src/main/resources/codefact.p12 ./
 # Exponer el puerto
 EXPOSE 8003
 # Comando para ejecutar la aplicación

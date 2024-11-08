@@ -6,6 +6,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8003:8003"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dpg-csmmu71u0jms73fq3550-a.oregon-postgres.render.com/payment_module?sslmode=require&ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
     networks:
       - my_bridge_network
 
