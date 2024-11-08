@@ -63,7 +63,10 @@ INSERT INTO "user" (id)
 VALUES
     (1),
     (2),
-    (3);
+    (3),
+    (4);
+
+
 
 INSERT INTO public.payment_method (name)
 VALUES
@@ -80,7 +83,6 @@ VALUES
 -- Insertar datos en gateway_payment
 INSERT INTO gateway_payment (name) VALUES
 ('Stripe'),
-('U-Pay'),
 ('Mercadopago');
 
 -- Insertar datos en booking

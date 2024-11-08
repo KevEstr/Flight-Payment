@@ -1,27 +1,19 @@
-# Usa una imagen de Maven con OpenJDK (Eclipse Temurin) para construir el proyecto
-FROM maven:3.8.8-eclipse-temurin-21-alpine AS build
-
-# Establece el directorio de trabajo para la fase de construcción
+FROM maven:3.8.6 AS build
+# Establecer el directorio de trabajo
 WORKDIR /app
-
-# Copia el archivo POM y el código fuente al contenedor
-COPY pom.xml ./
+# Copiar el archivo pom.xml
+COPY pom.xml ./pom.xml
+# Copiar el código fuente
 COPY src ./src
-
-# Ejecuta la compilación del proyecto utilizando Maven
-RUN mvn clean package -DskipTests
-
-# Fase de producción con OpenJDK
-FROM eclipse-temurin:17-jdk-noble
-
-# Establece el directorio de trabajo en el contenedor
+# Construir el JAR
+RUN mvn clean package -DskipTests -f ./pom.xml
+# Etapa de ejecución
+FROM openjdk:17-jdk-slim
+# Establecer el directorio de trabajo
 WORKDIR /app
-
-# Copia el JAR generado en la fase anterior
-COPY --from=build /app/target/payments.jar /app/modulo-pagos.jar
-
-# Expone el puerto de la aplicación
-EXPOSE 8081
-
-# Comando de inicio para la aplicación
-ENTRYPOINT ["java", "-jar", "/app/modulo-pagos.jar"]
+# Copiar el archivo JAR desde la etapa de construcción
+COPY --from=build /app/target/*.jar app.jar
+# Exponer el puerto
+EXPOSE 8003
+# Comando para ejecutar la aplicación
+ENTRYPOINT ["java", "-jar", "app.jar"]

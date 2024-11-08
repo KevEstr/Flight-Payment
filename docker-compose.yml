@@ -1,41 +1,20 @@
-version: '3.8'
+name: pagos-a
 services:
-  app:
+  springboot-app:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "8003:8003"
     environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: juan_payment
-      DB_USER: postgres
-      DB_PASSWORD: 123
-    depends_on:
-      - db
+      DB_HOST: aws-0-us-west-1.pooler.supabase.com
+      DB_PORT: 6543
+      DB_NAME: postgres
+      DB_USER: postgres.gbxuojquibukppijatpv
+      DB_PASSWORD: 0PdVadsLIfzGJ32r
+    networks:
+      - my_bridge_network
 
-  db:
-    image: postgres:14
-    environment:
-      POSTGRES_DB: juan_payment
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init-scripts:/docker-entrypoint-initdb.d
-
-  ngrok:
-    image: wernight/ngrok
-    command: ngrok http --host-header=rewrite app:8081
-    ports:
-      - "4040:4040"  # Para acceder al panel de Ngrok
-    environment:
-      NGROK_AUTHTOKEN: "2nAwnVBeLRvSAivT30Gd8KykSb0_77qzu4Nq7CoEhXY1GXwvK"
-    depends_on:
-      - app
-
-volumes:
-  postgres_data:
+networks:
+  my_bridge_network:
+    external: true
