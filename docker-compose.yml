@@ -7,13 +7,10 @@ services:
     ports:
       - "8003:8003"
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres?sslmode=require"
-      SPRING_DATASOURCE_USERNAME: "postgres.gbxuojquibukppijatpv"
-      SPRING_DATASOURCE_PASSWORD: "0PdVadsLIfzGJ32r"
-      SPRING_JPA_DATABASE_PLATFORM: "org.hibernate.dialect.PostgreSQLDialect"
-      SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
-      SPRING_JPA_SHOW_SQL: "true"
-      SERVER_PORT: "8003"
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://aws-0-us-west-1.pooler.supabase.com:6543/postgres?user=postgres.gbxuojquibukppijatpv&password=0PdVadsLIfzGJ32r&sslmode=require
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
     networks:
       - my_bridge_network
 
