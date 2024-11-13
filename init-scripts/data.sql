@@ -90,8 +90,30 @@ INSERT INTO booking (user_id, price, is_paid, additional_charge)
 VALUES
 (1, 34000, false, 2100),
 (2, 66000, false, 4900),
-(3, 98000, false, 3500);
-
+(3, 98000, false, 3500),
+(4, 98000, false, 3500),
+(5, 98000, false, 3500),
+(6, 98000, false, 3500),
+(7, 98000, false, 3500),
+(8, 98000, false, 3500),
+(9, 98000, false, 3500),
+(10, 98000, false, 3500),
+(11, 98000, false, 3500),
+(12, 98000, false, 3500),
+(13, 98000, false, 3500),
+(14, 98000, false, 3500),
+(15, 98000, false, 3500),
+(16, 98000, false, 3500),
+(17, 98000, false, 3500),
+(18, 98000, false, 3500),
+(19, 98000, false, 3500),
+(20, 98000, false, 3500),
+(21, 98000, false, 3500),
+(22, 98000, false, 3500),
+(23, 98000, false, 3500),
+(24, 98000, false, 3500),
+(25, 98000, false, 3500),
+(26, 98000, false, 3500);
 INSERT INTO flight_info (flight_id, booking_id)
 VALUES
 (1,1),
