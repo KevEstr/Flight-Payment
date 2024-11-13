@@ -8,10 +8,32 @@ services:
       - "8003:8003"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://dpg-csmmu71u0jms73fq3550-a.oregon-postgres.render.com/payment_module?sslmode=require&ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/payment_module
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    depends_on:
+      - postgres-db
+    networks:
+      - my_bridge_network
+
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_DB: payment_module
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - my_bridge_network
 
 networks:
   my_bridge_network:
     external: true
+
+volumes:
+  postgres_data:
