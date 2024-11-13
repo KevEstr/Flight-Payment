@@ -23,8 +23,8 @@ public class StripePaymentService {
                 SessionCreateParams.builder()
                         .setMode(SessionCreateParams.Mode.PAYMENT)
                         .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                        .setSuccessUrl("http://localhost:8081/success?booking_id="+bookingId)
-                        .setCancelUrl("http://localhost:8081/cancel")
+                        .setSuccessUrl("https://codefact.udea.edu.co/modulo-03/success?booking_id="+bookingId)
+                        .setCancelUrl("https://codefact.udea.edu.co/modulo-03/cancel")
                         .addLineItem(
                                 SessionCreateParams.LineItem.builder()
                                         .setPriceData(
