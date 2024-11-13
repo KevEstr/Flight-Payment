@@ -40,9 +40,9 @@ public class MercadoPagoService {
 
             // Agregar external_reference con el transactionId
             PreferenceBackUrlsRequest backUrls = PreferenceBackUrlsRequest.builder()
-                    .success("http://localhost:8081/success")
-                    .failure("http://localhost:8081/failure")
-                    .pending("http://localhost:8081/pending")
+                    .success("https://codefact.udea.edu.co/modulo-03/success")
+                    .failure("https://codefact.udea.edu.co/modulo-03/failure")
+                    .pending("https://codefact.udea.edu.co/modulo-03/pending")
                     .build();
 
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
