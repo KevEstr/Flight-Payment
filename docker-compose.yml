@@ -8,7 +8,7 @@ services:
       - "8003:8003"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5132/payment_module
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/payment_module
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
     depends_on:
