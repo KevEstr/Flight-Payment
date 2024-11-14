@@ -32,7 +32,6 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id", nullable = false)
-    @JsonManagedReference
     private User user;
 
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
