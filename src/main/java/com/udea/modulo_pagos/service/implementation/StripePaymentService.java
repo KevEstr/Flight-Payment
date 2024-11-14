@@ -23,8 +23,8 @@ public class StripePaymentService {
                 SessionCreateParams.builder()
                         .setMode(SessionCreateParams.Mode.PAYMENT)
                         .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
-                        .setSuccessUrl("https://codefact.udea.edu.co/modulo-03/success?booking_id="+bookingId)
-                        .setCancelUrl("https://codefact.udea.edu.co/modulo-03/cancel")
+                        .setSuccessUrl("https://pagos-a.vercel.app/pagos-A/payment-success?booking_id="+bookingId)
+                        .setCancelUrl("https://pagos-a.vercel.app/pagos-A/payment-failed?booking_id="+bookingId)
                         .addLineItem(
                                 SessionCreateParams.LineItem.builder()
                                         .setPriceData(
