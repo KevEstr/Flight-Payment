@@ -12,13 +12,13 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
     depends_on:
-      - pagos-a-db
+      - postgres-db
     networks:
       - my_bridge_network
 
-  pagos-a-db:
+  postgres-db:
     image: postgres:15
-    container_name: pagos-a-db
+    container_name: postgres-db
     restart: always
     environment:
       POSTGRES_DB: payment_module
