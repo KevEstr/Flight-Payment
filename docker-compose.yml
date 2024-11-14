@@ -16,7 +16,7 @@ services:
     networks:
       - my_bridge_network
 
-  postgres-db:
+  pagos-a-db:
     image: postgres:15
     container_name: postgres-db
     restart: always
