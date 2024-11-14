@@ -12,7 +12,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
     depends_on:
-      - postgres-db
+      - pagos-a-db
     networks:
       - my_bridge_network
 
