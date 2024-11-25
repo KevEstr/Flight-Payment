@@ -54,10 +54,13 @@ jobs:
 
       - name: Run Integration Tests
         env:
-          POSTGRES_URL: jdbc:postgresql://localhost:5432/juan_payment
+          POSTGRES_URL: jdbc:postgresql://localhost:5432/comoquiera
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
-        run: mvn -B test -Pintegration-test
+        run: mvn -B test -Pintegration-test \
+          -Dspring.datasource.url=${{ env.POSTGRES_URL }} \
+          -Dspring.datasource.username=${{ env.POSTGRES_USER }} \
+          -Dspring.datasource.password=${{ env.POSTGRES_PASSWORD }}
 
   # Sonar's Job
   sonar:

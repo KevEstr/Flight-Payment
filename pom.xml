@@ -225,7 +225,7 @@
 		<profile>
 			<id>integration-test</id>
 			<properties>
-				<spring.profiles.active>test</spring.profiles.active>
+				<spring.profiles.active>integration</spring.profiles.active>
 			</properties>
 		</profile>
 	</profiles>
