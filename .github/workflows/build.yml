@@ -45,22 +45,12 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       # Run Tests with PostgreSQL
-      - name: Run Tests
+      - name: Run Integration and Unit Tests
         env:
           POSTGRES_URL: jdbc:postgresql://localhost:5432/comoquiera
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
         run: mvn -B test
-
-      - name: Run Integration Tests
-        env:
-          POSTGRES_URL: jdbc:postgresql://localhost:5432/comoquiera
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 123
-        run: mvn -B test -Pintegration-test \
-          -Dspring.datasource.url=${{ env.POSTGRES_URL }} \
-          -Dspring.datasource.username=${{ env.POSTGRES_USER }} \
-          -Dspring.datasource.password=${{ env.POSTGRES_PASSWORD }}
 
   # Sonar's Job
   sonar:
