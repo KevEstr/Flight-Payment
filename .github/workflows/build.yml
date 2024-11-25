@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  # Test's job
+  # Unit Tests Job
   tests:
     name: Unit tests
 
@@ -37,24 +37,67 @@ jobs:
 
       # Set up Maven cache
       - name: Cache Maven packages
-        # This action allows caching dependencies and build outputs to improve workflow execution time.
         uses: actions/cache@v1
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      # Run Tests with PostgreSQL
-      - name: Run Integration and Unit Tests
+      # Run Unit Tests with PostgreSQL
+      - name: Run Unit Tests
         env:
           POSTGRES_URL: jdbc:postgresql://localhost:5432/comoquiera
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
         run: mvn -B test
 
+  # Integration Tests Job
+  integration_tests:
+    name: Integration tests
+
+    # Run on Ubuntu using the latest version
+    runs-on: ubuntu-latest
+
+    services:
+      # Setup PostgreSQL service
+      postgres:
+        image: postgres:13
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: juan_payment
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123
+
+    # Job's steps
+    steps:
+      # Check-out your repository under $GITHUB_WORKSPACE, so your workflow can access it
+      - uses: actions/checkout@v1
+
+      # Set up JDK 17
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+
+      # Set up Maven cache
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      # Run Integration Tests with PostgreSQL
+      - name: Run Integration Tests
+        env:
+          POSTGRES_URL: jdbc:postgresql://localhost:5432/juan_payment
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: 123
+        run: mvn -B test -Pintegration-test
+
   # Sonar's Job
   sonar:
-    # Depends on test's job
     needs: tests
     name: SonarCloud analysis
 
@@ -74,7 +117,6 @@ jobs:
 
       # Set up SonarCloud cache
       - name: Cache SonarCloud packages
-        # This action allows caching dependencies and build outputs to improve workflow execution time.
         uses: actions/cache@v1
         with:
           path: ~/.sonar/cache
@@ -83,7 +125,6 @@ jobs:
 
       # Set up Maven cache
       - name: Cache Maven packages
-        # This action allows caching dependencies and build outputs to improve workflow execution time.
         uses: actions/cache@v1
         with:
           path: ~/.m2
