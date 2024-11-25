@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  # Test's job
+  # Test's job added
   tests:
     name: Unit and Integration Tests
     runs-on: ubuntu-latest
