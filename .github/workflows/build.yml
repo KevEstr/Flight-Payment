@@ -108,7 +108,16 @@ jobs:
 
       # Analyze with SonarCloud
       - name: Analyze with SonarCloud
-        run: mvn -B verify sonar:sonar -Dspring.datasource.url= -Dspring.datasource.username= -Dspring.datasource.password= -Dspring.jpa.hibernate.ddl-auto=none -Dsonar.projectKey=mono789_Flight-Payment -Dsonar.organization=mono789 -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -X
+        run: mvn -B verify sonar:sonar \
+          -Dspring.datasource.url=$POSTGRES_URL \
+          -Dspring.datasource.username=$POSTGRES_USER \
+          -Dspring.datasource.password=$POSTGRES_PASSWORD \
+          -Dspring.jpa.hibernate.ddl-auto=none \
+          -Dsonar.projectKey=mono789_Flight-Payment \
+          -Dsonar.organization=mono789 \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=$SONAR_TOKEN \
+          -X
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
