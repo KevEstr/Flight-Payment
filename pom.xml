@@ -223,18 +223,18 @@
 
 	<profiles>
 		<profile>
-			<id>integration-test</id>
-			<properties>
-				<spring.profiles.active>integration</spring.profiles.active>
-			</properties>
-		</profile>
-
-		<profile>
 			<id>application-test</id>
 			<properties>
-				<spring.profiles.active>application</spring.profiles.active>
+				<test.includes>**/ModuloPagosApplicationTests.java</test.includes>
+			</properties>
+		</profile>
+		<profile>
+			<id>integration-test</id>
+			<properties>
+				<test.includes>**/ModuloPagosIntegrationTests.java</test.includes>
 			</properties>
 		</profile>
 	</profiles>
+
 
 </project>
