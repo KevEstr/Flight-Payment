@@ -53,6 +53,7 @@ jobs:
 
   # Integration Tests Job
   integration_tests:
+    needs: tests
     name: Integration tests
 
     # Run on Ubuntu using the latest version
@@ -65,7 +66,7 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_DB: juan_payment
+          POSTGRES_DB: juan_payment2
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
 
@@ -91,14 +92,14 @@ jobs:
       # Run Integration Tests with PostgreSQL
       - name: Run Integration Tests
         env:
-          POSTGRES_URL: jdbc:postgresql://localhost:5432/juan_payment
+          POSTGRES_URL: jdbc:postgresql://localhost:5432/juan_payment2
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
         run: mvn -B test -Pintegration-test
 
   # Sonar's Job
   sonar:
-    needs: tests
+    needs: integration_tests
     name: SonarCloud analysis
 
     # Run on Ubuntu using the latest version
