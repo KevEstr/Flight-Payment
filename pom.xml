@@ -221,4 +221,20 @@
 		<finalName>payments</finalName>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>integration-test</id>
+			<properties>
+				<spring.profiles.active>integration</spring.profiles.active>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>application-test</id>
+			<properties>
+				<spring.profiles.active>application</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
+
 </project>

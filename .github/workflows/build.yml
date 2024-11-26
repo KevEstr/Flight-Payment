@@ -49,7 +49,7 @@ jobs:
           POSTGRES_URL: jdbc:postgresql://localhost:5432/comoquiera
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
-        run: mvn -B test
+        run: mvn -B test -Papplication-test
 
   # Integration Tests Job
   integration_tests:
