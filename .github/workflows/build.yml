@@ -66,9 +66,9 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Run Integration Tests
         env:
-          POSTGRES_URL: jdbc:postgresql://postgres:5432/juan_payment
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 123
+          SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/juan_payment
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: 123
         run: mvn -B verify
 
   # Sonar's Job
