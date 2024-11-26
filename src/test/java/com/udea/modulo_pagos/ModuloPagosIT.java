@@ -20,7 +20,7 @@ class ModuloPagosIT {
 
 	@Container
 	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:13")
-			.withDatabaseName("juan_payment2")
+			.withDatabaseName("juan_payment")
 			.withUsername("postgres")
 			.withPassword("123");
 
