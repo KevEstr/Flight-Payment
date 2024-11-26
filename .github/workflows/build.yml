@@ -109,9 +109,9 @@ jobs:
       # Analyze with SonarCloud
       - name: Analyze with SonarCloud
         run: mvn -B verify sonar:sonar \
-          -Dspring.datasource.url=$POSTGRES_URL \
-          -Dspring.datasource.username=$POSTGRES_USER \
-          -Dspring.datasource.password=$POSTGRES_PASSWORD \
+          -Dspring.datasource.url="jdbc:postgresql://localhost:5432/juan_payment" \
+          -Dspring.datasource.username=postgres \
+          -Dspring.datasource.password=123 \
           -Dspring.jpa.hibernate.ddl-auto=none \
           -Dsonar.projectKey=mono789_Flight-Payment \
           -Dsonar.organization=mono789 \
@@ -121,6 +121,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          POSTGRES_URL: jdbc:postgresql://localhost:5432/juan_payment
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 123
