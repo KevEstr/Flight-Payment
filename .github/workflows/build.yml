@@ -108,7 +108,7 @@ jobs:
 
       # Analyze with SonarCloud
       - name: Analyze with SonarCloud
-        run: mvn clean verify sonar:sonar \
+        run: mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
           -Dsonar.projectKey=mono789_Flight-Payment \
           -Dsonar.organization=mono789 \
           -Dsonar.host.url=https://sonarcloud.io \
@@ -116,8 +116,7 @@ jobs:
           -Dspring.datasource.url=jdbc:postgresql://localhost:5432/juan_payment \
           -Dspring.datasource.username=postgres \
           -Dspring.datasource.password=123 \
-          -Dspring.jpa.hibernate.ddl-auto=none \
-          -X
+          -Dspring.jpa.hibernate.ddl-auto=none
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
