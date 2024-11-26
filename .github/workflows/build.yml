@@ -9,12 +9,8 @@ jobs:
   # Unit Tests Job
   tests:
     name: Unit tests
-
-    # Run on Ubuntu using the latest version
     runs-on: ubuntu-latest
-
     services:
-      # Setup PostgreSQL service
       postgres:
         image: postgres:13
         ports:
@@ -23,44 +19,31 @@ jobs:
           POSTGRES_DB: juan_payment
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
-
-    # Job's steps
     steps:
-      # Check-out your repository under $GITHUB_WORKSPACE, so your workflow can access it
       - uses: actions/checkout@v1
-
-      # Set up JDK 17
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: '17'
-
-      # Set up Maven cache
       - name: Cache Maven packages
         uses: actions/cache@v1
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-
-      # Run Unit Tests with PostgreSQL
       - name: Run Unit Tests
         env:
-          POSTGRES_URL: jdbc:postgresql://localhost:5432/comoquiera
+          POSTGRES_URL: jdbc:postgresql://localhost:5432/juan_payment
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
-        run: mvn -B test -Papplication-test
+        run: mvn -B test
 
   # Integration Tests Job
   integration_tests:
     needs: tests
     name: Integration tests
-
-    # Run on Ubuntu using the latest version
     runs-on: ubuntu-latest
-
     services:
-      # Setup PostgreSQL service
       postgres:
         image: postgres:13
         ports:
@@ -69,33 +52,24 @@ jobs:
           POSTGRES_DB: juan_payment2
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
-
-    # Job's steps
     steps:
-      # Check-out your repository under $GITHUB_WORKSPACE, so your workflow can access it
       - uses: actions/checkout@v1
-
-      # Set up JDK 17
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
           java-version: '17'
-
-      # Set up Maven cache
       - name: Cache Maven packages
         uses: actions/cache@v1
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-
-      # Run Integration Tests with PostgreSQL
       - name: Run Integration Tests
         env:
           POSTGRES_URL: jdbc:postgresql://localhost:5432/juan_payment2
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
-        run: mvn -B test -Pintegration-test
+        run: mvn -B verify
 
   # Sonar's Job
   sonar:
