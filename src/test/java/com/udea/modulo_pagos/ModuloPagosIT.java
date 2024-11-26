@@ -20,9 +20,9 @@ class ModuloPagosIT {
 
 	@Container
 	static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:13")
-			.withDatabaseName("testdb")
-			.withUsername("testuser")
-			.withPassword("testpass");
+			.withDatabaseName("juan_payment2")
+			.withUsername("postgres")
+			.withPassword("123");
 
 	@Autowired
 	private IPaymentRepository paymentRepository;
@@ -39,17 +39,40 @@ class ModuloPagosIT {
 	@Autowired
 	private IUserRepository userRepository;
 
+	@Autowired
+	private IPaymentMethodRepository paymentMethodRepository;
+
+
 	// Pruebas de Payment
 	@Test
 	void testCreateAndRetrievePayment() {
 		// Crear entidades relacionadas
-		Transaction transaction = new Transaction();
-		transaction.setDate(LocalDate.now());
-		transactionRepository.save(transaction);
+
+		User user = new User();
+		userRepository.save(user);
+
+		PaymentMethod paymentMethod = new PaymentMethod();
+		paymentMethod.setName("Efectivo");
+		paymentMethodRepository.save(paymentMethod);
+
+		Booking booking = new Booking();
+		booking.setUser(user);
+		booking.setPrice(100.0f);
+		booking.setAdditional_charge(10.0);
+		booking.set_paid(false);
+		bookingRepository.save(booking);
 
 		GatewayPayment gatewayPayment = new GatewayPayment();
 		gatewayPayment.setName("Stripe");
 		gatewayPaymentRepository.save(gatewayPayment);
+
+		Transaction transaction = new Transaction();
+		transaction.setDate(LocalDate.now());
+		transaction.setTotal_price(5000L);
+		transaction.setBooking(booking);
+		transaction.setGateway_payment(gatewayPayment);
+		transaction.setPayment_method(paymentMethod);
+		transactionRepository.save(transaction);
 
 		// Crear Payment
 		Payment payment = new Payment();
@@ -70,7 +93,6 @@ class ModuloPagosIT {
 	void testCreateAndRetrieveBooking() {
 		// Crear usuario relacionado
 		User user = new User();
-		user.setId(10L);
 		userRepository.save(user);
 
 		// Crear Booking
@@ -93,7 +115,6 @@ class ModuloPagosIT {
 	void testGetAllUserBookings() {
 		// Crear usuario relacionado
 		User user = new User();
-		user.setId(10L);
 		userRepository.save(user);
 
 		// Crear Bookings
