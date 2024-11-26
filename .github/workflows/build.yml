@@ -33,7 +33,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Run Unit Tests
         env:
-          POSTGRES_URL: jdbc:postgresql://localhost:5432/juan_payment
+          POSTGRES_URL: jdbc:postgresql://postgres:5432/juan_payment
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
         run: mvn -B test
@@ -66,7 +66,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Run Integration Tests
         env:
-          POSTGRES_URL: jdbc:postgresql://localhost:5432/juan_payment
+          POSTGRES_URL: jdbc:postgresql://postgres:5432/juan_payment
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: 123
         run: mvn -B verify
