@@ -76,6 +76,7 @@ jobs:
     needs: integration_tests
     name: SonarCloud analysis
 
+    if: github.ref == 'refs/heads/main'
     # Run on Ubuntu using the latest version
     runs-on: ubuntu-latest
 
